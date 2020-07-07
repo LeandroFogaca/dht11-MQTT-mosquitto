@@ -16,7 +16,7 @@ long lastMsg = 0;
 
 
 //informações do broker MQTT - Verifique as informações geradas pelo CloudMQTT
-const char* mqttServer = "34.95.185.209";   //server
+const char* mqttServer = "endereço do servidor broker";   //server
 const char* mqttUser = "";              //user
 const char* mqttPassword = "";      //password
 const int mqttPort = 1883;                     //port
@@ -46,7 +46,7 @@ void setup()
 
   dht.begin();
 
-  WiFi.begin("Hifai", "dontbeass");
+  WiFi.begin("SSID", "senha");
 
   Serial.print("Connecting");
   
@@ -157,8 +157,8 @@ void loop() {
     lastMsg = now;
  
   
-  temperature = dht.readtemperature; 
-  umidity = dht.readumidity;
+  temperature = dht.readTemperature(); 
+  umidity = dht.readHumidity();
   
   
   char tmpMSG[8];
