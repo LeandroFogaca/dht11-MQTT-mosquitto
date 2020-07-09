@@ -11,8 +11,10 @@
   Foi utilizado um dht11 conectado a um ESP01 para testar uma comunicação utilizando o protocolo mqtt junto com um broker mosquitto em uma máquina virtual do google.
 a idéia é criar um dispositivo versatil que possa coletar a temperatura e umidade ambiente, além de uma entrada digital e uma saida digital.
 
-### Conectividade
+## Começando
 
- 1. Conexão via wifi em modo *STA* à um broker mosquitto na nuvem
- 2. Conexção via wifi em modo *AP* com um smartphone
+Você precisara dos seguintes recursos
+
+- [Arduino IDE](https://www.arduino.cc/en/Main/Software)
+- [Mosquitto](https://mosquitto.org/download/)
 
