@@ -21,25 +21,21 @@ const char* password = "senha";
 
 //....informações do broker MQTT - Verifique as informações geradas pelo CloudMQTT
 
-
 const char* mqttServer = "servidorMQTT";   //server
 const char* mqttUser = "";                     //user
 const char* mqttPassword = "";                //password
 const int mqttPort = 1883;                     //port
-
 
 //.........Tópicos mqtt que serão recebidos e enviados........................................//
 
 const char* mqttTopicSub1 = "topic001";           //tópico que sera assinado botão
 const char* mqttTopicPubtemp = "topictmp";     //tópico que sera assinado temperatura
 const char* mqttTopicPubumid = "topicumd";     //tópico que sera assinado temperatura
-//const char* mqttTopicPubtemp ="topictmp";      //tópico que sera assinado umidade
-
 
 //....................................................................................................//
 
-WiFiClient EspClientSampaio;
-PubSubClient client(EspClientSampaio);
+WiFiClient Esplf;
+PubSubClient client(Esplf);
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -47,7 +43,7 @@ DHT dht(DHTPIN, DHTTYPE);
 void setup()
 {
   Serial.begin(9600);
-  dht.begin();
+  //...................Conectando na rede WIFI.................................................//
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
@@ -58,6 +54,7 @@ void setup()
     delay(500);
     Serial.print(".");
   }
+
   // Port defaults to 8266
   // ArduinoOTA.setPort(8266);
 
@@ -71,6 +68,9 @@ void setup()
   // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
   // ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
 
+
+//...................Conectando no broker.................................//
+
   Serial.print("Connected, IP address: ");
   Serial.println(WiFi.localIP());
   Serial.println("Conectando no servidor mqtt................");
@@ -80,7 +80,7 @@ void setup()
   while (!client.connected()) {
     Serial.println("Conectando ao Broker MQTT...");
 
-    if (client.connect("EspClientSampaioId", mqttUser, mqttPassword )) {
+    if (client.connect("Esplf", mqttUser, mqttPassword )) {
       Serial.println("Conectado");
     } else {
       Serial.print("falha estado  ");
@@ -91,9 +91,6 @@ void setup()
   }
 
 
-  client.subscribe(mqttTopicSub1);
-
-  pinMode(L1, OUTPUT);
 
   ArduinoOTA.onStart([]() {
      Serial.println("Iniciando OTA");
@@ -122,6 +119,11 @@ void setup()
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+  
+
+  dht.begin();
+  pinMode(L1, OUTPUT);
+  client.subscribe(mqttTopicSub1);
 
 }
 
@@ -179,14 +181,13 @@ void loop() {
 
   ArduinoOTA.handle();
 
-
   if (!client.connected()) {
     reconect();
   }
   client.loop();
 
 
-  // Publica o valor de temperatura e umidade a cada 10 segundos
+  // Publica o valor de temperatura e umidade a cada 5 segundos
   long now = millis();
   if (now - lastMsg > 5000) {
     lastMsg = now;
@@ -204,5 +205,4 @@ void loop() {
     client.publish(mqttTopicPubumid, umdMSG);
 
   }
-
 }
